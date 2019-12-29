@@ -19,6 +19,7 @@ class Detector:
         self.zonesPath = zonesPath
         self.zones = [os.path.join(zonesPath, f) for f in os.listdir(zonesPath) 
             if os.path.isfile(os.path.join(zonesPath, f))]
+        self.threshold = 0.5
         
         self.results = {}
     
@@ -47,7 +48,7 @@ class Detector:
         x = self.prepImages()
         probas = self.model.predict_proba(x, batch_size=batchSize).reshape(len(x))
         probas = probas.reshape((len(self.zones), (satHeight//imgHeight)*(satWidth//imgWidth)))
-        return np.where(probas>=0.5, probas, 0.), probas
+        return np.where(probas>=self.threshold, probas, 0.), probas
 
     def getAdjacentBoxes(self, coords:list)->list:
         # naive approach, this can be further optimized for high resolution
@@ -109,7 +110,7 @@ class Detector:
             for h,w in predAgain:
                 x = image[:,w:w+50,h:h+50,:]
                 pr = self.model.predict_proba(x)[0][0]
-                if pr >= 0.5:
+                if pr >= self.threshold:
                     res[self.zones[idx]]["pos"].append((int(h),int(w)))
                     res[self.zones[idx]]["probas"].append(float(pr))   
             res[self.zones[idx]]["nbPools"] = len(res[self.zones[idx]]["pos"])
@@ -143,7 +144,7 @@ class Detector:
                     xy=xy, color=color,weight="bold", ha="center", va="center")
             plt.xticks([])
             plt.yticks([])
-            plt.savefig("./data/detected/pooldetection_th=0.75_{}".format(self.removePrefix(img)))
+            plt.savefig("./data/detected/pooldetection_th={}_{}".format(self.threshold, self.removePrefix(img)))
         return
 
     def drawHeatmap(self, probaMap:list)->None:
