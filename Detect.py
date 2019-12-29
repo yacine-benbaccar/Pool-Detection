@@ -10,6 +10,7 @@ import warnings
 import os
 
 sns.set()
+sns.set_style("whitegrid", {'axes.grid' : False})
 warnings.filterwarnings("ignore")
 
 class Detector:
@@ -140,7 +141,9 @@ class Detector:
                 ax.annotate(
                     s="prob:{:.3f}".format(proba),
                     xy=xy, color=color,weight="bold", ha="center", va="center")
-            plt.savefig("./data/detected/pooldetection_{}".format(self.removePrefix(img)))
+            plt.xticks([])
+            plt.yticks([])
+            plt.savefig("./data/detected/pooldetection_th=0.75_{}".format(self.removePrefix(img)))
         return
 
     def drawHeatmap(self, probaMap:list)->None:
@@ -212,8 +215,8 @@ if __name__ == "__main__":
     results = detect.cleanProba(probas)
     elapsedTime = time.clock() - tic
     
-    # detect.drawBoxes()
-    detect.drawHeatmap(probaMap)
+    detect.drawBoxes()
+    # detect.drawHeatmap(probaMap)
     print("Elapsed Time [s]: {:.3f}".format(elapsedTime))
     with open("results.json","w") as f:
         json.dump(results, f, indent=4)
