@@ -191,7 +191,7 @@ if __name__ == "__main__":
     batchSize = 16
 
     # load the model: PoolNet from the h5 file
-    path2Weights = "./data/best_weights_baseline.h5"
+    path2Weights = "./data/best_weights_baseline_3.h5"
     trainFile = "Train.py"
 
     # check if the weights exist

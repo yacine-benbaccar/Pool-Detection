@@ -11,8 +11,8 @@ import os
 warnings.filterwarnings("ignore")
 
 class TrainModel:
-    def __init__(self, model:Sequential, *args):
-        self.CHECKPOINTPATH = './data/best_weights_baseline.h5'
+    def __init__(self, model:Sequential, saveFile:str='best_weights_baseline.h5', *args):
+        self.CHECKPOINTPATH = './data/'+saveFile
         self.VALDIR = './data/validation'
         self.TRAINDIR = './data/train'
         self.IMGWIDTH, self.IMGHEIGHT = 50, 50
@@ -102,7 +102,7 @@ class TrainModel:
 
         self.model.compile(
             loss='binary_crossentropy',
-            optimizer='adam', # try it with rmsprop
+            optimizer='sgd',
             metrics=['accuracy']
         )
         self.modelHistory = self.model.fit_generator(
@@ -143,6 +143,7 @@ class TrainModel:
 if __name__ == "__main__":
     width, height, channels = 50, 50, 3
     model = PoolNetBaseline.build(width, height, channels)
-    
-    trainHelper = TrainModel(model)
+    # model = PoolNetResnet.build(width, height, channels)
+
+    trainHelper = TrainModel(model, 'best_weights_baseline_3.h5')
     trainHelper.trainModel()
