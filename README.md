@@ -54,10 +54,13 @@ pip install -r requirements.txt
 
 The baseline model is a simple 3-layered Convnet. This model is a simple implementation of a *Convolutional Neural Network* and will be used as refrence (in terms of performance) to the rest of the tested models.
 
-![alt text](data/PoolNetBaseline_3.png)*PoolNetBaseline Architecture*
+![alt text](data/README/PoolNetBaseline_3.png)*PoolNetBaseline Architecture*
 
 ### Detection Mechanisms
 
+![alt text](data/README/decomp.png)*Satelite image decomposition*
+
+![alt text](data/README/merging_adj.png)*Merging adjacent bounding boxes for better location prediction*
 ***
 
 ## Results
@@ -71,15 +74,15 @@ The baseline model is a simple 3-layered Convnet. This model is a simple impleme
     - *pools*: 179 (50x50) images
     - *no_pools*: 176 (50x50) images
 
-![alt text](data/acc_loss_history_3.png)*Train/Validation Loss/Accuracy*
+![alt text](data/README/acc_loss_history_3.png)*Train/Validation Loss/Accuracy*
 
 ### Quality of the detection
 
 Sample Detection image *(zone18.jpg)*:
 
-![alt text](data/detected/pooldetection_th%3D0.5_zone18.jpg)*Detection on a satellite image with a threshold of 0.5 (the default output of the **detect** class)*
+![alt text](data/README/pooldetection_th%3D0.5_zone18.jpg)*Detection on a satellite image with a threshold of 0.5 (the default output of the **detect** class)*
 
-![alt text](data/detected/pooldetection_th%3D0.75_zone18.jpg)*Detection on a satellite image with a threshold of 0.75 on the probability of each patch*
+![alt text](data/README/pooldetection_th%3D0.75_zone18.jpg)*Detection on a satellite image with a threshold of 0.75 on the probability of each patch*
 
 Along with the image we provide a dictonary that contains all information relative to the position and probabilities of each bounding boxes (in this context we only keep the patches with a probability > 0.5, as the purpose of this project is to prove the feasability of such detection).
 
