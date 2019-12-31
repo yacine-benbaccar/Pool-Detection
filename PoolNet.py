@@ -2,6 +2,7 @@ from keras.models import Sequential, Model
 from keras.layers import Conv2D, MaxPooling2D, Input, AveragePooling2D
 from keras.layers import Activation, Dropout, Dense, Flatten
 from keras import applications
+from keras.utils import plot_model
 from keras import backend as K
 
 class PoolNetBaseline:
@@ -74,4 +75,6 @@ class PoolNetResnet:
         return model
 
 if __name__ == "__main__":
+    model = PoolNetBaseline.build(50,50,3)
+    plot_model(model, 'PoolNetBaseline.png', show_shapes=True, rankdir='LR')
     print('END')

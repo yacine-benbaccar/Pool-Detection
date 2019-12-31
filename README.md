@@ -54,6 +54,8 @@ pip install -r requirements.txt
 
 The baseline model is a simple 3-layered Convnet. This model is a simple implementation of a *Convolutional Neural Network* and will be used as refrence (in terms of performance) to the rest of the tested models.
 
+![alt text](data/PoolNetBaseline_3.png)*PoolNetBaseline Architecture*
+
 ### Detection Mechanisms
 
 ***
@@ -62,8 +64,12 @@ The baseline model is a simple 3-layered Convnet. This model is a simple impleme
 
 ### Quality of the classifier
 
-- #Train data = X
-- #Validation data = Y 
+- Number of training data :
+    - *pools* : 1398 (50x50) images
+    - *no_pools*: 1325 (50x50) images
+- Number of validation data:
+    - *pools*: 179 (50x50) images
+    - *no_pools*: 176 (50x50) images
 
 ![alt text](data/acc_loss_history_3.png)*Train/Validation Loss/Accuracy*
 
