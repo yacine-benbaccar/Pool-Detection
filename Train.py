@@ -12,7 +12,7 @@ warnings.filterwarnings("ignore")
 
 class TrainModel:
     def __init__(self, model:Sequential, saveFile:str='best_weights_baseline.h5', *args):
-        self.CHECKPOINTPATH = './data/'+saveFile
+        self.CHECKPOINTPATH = './predictions/weights/'+saveFile
         self.VALDIR = './data/validation'
         self.TRAINDIR = './data/train'
         self.IMGWIDTH, self.IMGHEIGHT = 50, 50
@@ -20,7 +20,7 @@ class TrainModel:
         self.class1 = '/pools'
         self.class2 = '/no_pools'
 
-        self.graphPath = './data/acc_loss_history.png'
+        self.graphPath = './predictions/history/acc_loss_history.png'
         self.batchSize = 16 # default values will be changed later
         self.nbEpochs = 50 # default values will be changed later
         self.nbValidation = len([1 for f in os.listdir(self.VALDIR+self.class1) 
@@ -91,7 +91,7 @@ class TrainModel:
         if useAutoAugmentation:
             self.dataAugmentation()
         # Keras Callbacks:
-        # EarlyStopping: Used to stop the training when there is no more gains
+        # EarlyStopping: Used to stop the training when there are no more gains
         #   in terms of loss (decreasing) and accuracy (increasing)
         # ModelCheckpoint: Used to save the weights of the best performing model
         #   on the validation dataset

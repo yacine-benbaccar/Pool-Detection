@@ -58,32 +58,32 @@ pip install -r requirements.txt
 
 The baseline model is a simple 3-layered Convnet. This model is a simple implementation of a *Convolutional Neural Network* and will be used as reference (in terms of performance) to the rest of the tested models.
 
-![alt text](data/README/PoolNetBaseline_3.png)*PoolNetBaseline Architecture*
+![alt text](README/PoolNetBaseline_3.png)*PoolNetBaseline Architecture*
 
 ## Detection Mechanisms
 
 For the detection part, we divide the image into a grid of 50x50 patches which give us 512 candidate positions to test per satellite image (see image below). The constraint that was imposed for this project is to process one image in less then 10 seconds, but with our baseline model (which is a very simple convnet) we are able to provide predictions for 30 satellite images in around 35 seconds on a CPU (with only two cores).
 
-![alt text](data/README/decomp.png)*Satellite image decomposition*
+![alt text](README/decomp.png)*Satellite image decomposition*
 
 Another post-processing has been implemented to provide better predictions. Since we do not have any priors about the position of pools within the satellite image, we test for adjacency on the boxes that we've detected (horizontally or vertically) within the grid. This case is encountered when the pool image is divided between two patches, so we merge the boxes and recompute the probability for that specific patch (Exp: see image below.).
 
-![alt text](data/README/merging_adj.png)*Merging adjacent bounding boxes for better location prediction*
+![alt text](README/merging_adj.png)*Merging adjacent bounding boxes for better location prediction*
 ***
 
 ## Results
 
 ### Quality of the classifier
 
-![alt text](data/README/acc_loss_history_3.png)*Train/Validation Loss/Accuracy*
+![alt text](README/acc_loss_history_3.png)*Train/Validation Loss/Accuracy*
 
 ### Quality of the detection
 
 Sample Detection image *(zone18.jpg)*:
 
-![alt text](data/README/pooldetection_th%3D0.5_zone18.jpg)*Detection on a satellite image with a threshold of 0.5 (the default output of the **detect** class)*
+![alt text](README/pooldetection_th%3D0.5_zone18.jpg)*Detection on a satellite image with a threshold of 0.5 (the default output of the **detect** class)*
 
-![alt text](data/README/pooldetection_th%3D0.75_zone18.jpg)*Detection on a satellite image with a threshold of 0.75 on the probability of each patch*
+![alt text](README/pooldetection_th%3D0.75_zone18.jpg)*Detection on a satellite image with a threshold of 0.75 on the probability of each patch*
 
 Along with the image we provide a dictionary that contains all information relative to the position and probabilities of each bounding boxes (In this context we only keep the patches with a probability > 0.5, as the purpose of this project is to prove the feasibility of such detection.).
 

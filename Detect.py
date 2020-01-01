@@ -29,7 +29,7 @@ class Detector:
         return s
 
     def splitImage(self, img:list)->list:
-        # Splits an image into `imgHeight x imgWidth` subimage of size = (imgHeight,imgWidth)
+        # Splits an image of size `satHeight x satWidth` into a list of subimages of size = (imgHeight,imgWidth)
         return [img[:, imgWidth*row:imgWidth*(row+1),imgHeight*col:imgHeight*(col+1),:]
             for row in range(satHeight//imgHeight) for col in range(satWidth//imgWidth)]
 
@@ -52,7 +52,7 @@ class Detector:
 
     def getAdjacentBoxes(self, coords:list)->list:
         # naive approach, this can be further optimized for high resolution
-        # images with a high number of instances detected
+        # images with a high number of detected instances 
         adj = []
         for i in range(len(coords)):
             for j in range(i+1,len(coords)):
@@ -144,7 +144,7 @@ class Detector:
                     xy=xy, color=color,weight="bold", ha="center", va="center")
             plt.xticks([])
             plt.yticks([])
-            plt.savefig("./data/detected/pooldetection_th={}_{}".format(self.threshold, self.removePrefix(img)))
+            plt.savefig("./predictions/images/pooldetection_th={}_{}".format(self.threshold, self.removePrefix(img)))
         return
 
     def drawHeatmap(self, probaMap:list)->None:
@@ -179,7 +179,7 @@ class Detector:
             plt.xticks([])
             plt.yticks([])
             # save the new heatmap
-            plt.savefig("./data/detected/heatmap_{}".format(self.removePrefix(img)))
+            plt.savefig("./predictions/images/heatmap_{}".format(self.removePrefix(img)))
 
         return
 
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     batchSize = 16
 
     # load the model: PoolNet from the h5 file
-    path2Weights = "./data/best_weights_baseline_3.h5"
+    path2Weights = "./predictions/weights/best_weights_baseline_3.h5"
     trainFile = "Train.py"
 
     # check if the weights exist
@@ -219,7 +219,7 @@ if __name__ == "__main__":
     detect.drawBoxes()
     # detect.drawHeatmap(probaMap)
     print("Elapsed Time [s]: {:.3f}".format(elapsedTime))
-    with open("results.json","w") as f:
+    with open("predictions/results.json","w") as f:
         json.dump(results, f, indent=4)
 
     print("END")
