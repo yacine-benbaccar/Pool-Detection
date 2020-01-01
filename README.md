@@ -1,10 +1,10 @@
 # Pool-Detection
 
-The objectif for this project is to provide a POC (Proof Of Concept) to prove the feasability of **detecting pools from satellite images**.
+The aim of this project is to provide a POC (Proof Of Concept) to prove the feasibility of **detecting pools from satellite images**.
 
-This task will be divided into two steps :
+This task will be divided into two steps:
 
-- Create a image classification model (Convnet) to distinguish between images with *pools* and images without *no_pools*.
+- Create an image classification model (Convnet) to distinguish between images with pools and images without *no_pools*.
 - Then use this model to scan satellite images and find the position of potential pools on the image.
 
 ***
@@ -22,9 +22,7 @@ This task will be divided into two steps :
     └───zones
 ```
 
-To create the image classifier we dispose of around 1500 images of each class (*pools*, *no_pools*). This data is divided into **train** and **validation** sets.
-The **train** and **test** set contains respectively  around 1400 and 100 images of each class.
-Each image has a dimension of 50 x 50.
+To create the image classifier, we dispose of around 1500 images of each class (pools, no_pools). This data are divided into **train** and **validation** sets. The **train** and **validation** set contain respectively around 1400 and 100 images of each class. Each image has a dimension of 50 x 50.
 
 Sample images:
 
@@ -32,11 +30,19 @@ Sample images:
 
 *no_pools* : ![alt text](./data/train/no_pools/img0.jpg) ![alt text](./data/train/no_pools/img23.jpg) ![alt text](./data/train/no_pools/img451.jpg) ![alt text](./data/train/no_pools/img151.jpg) ![alt text](./data/train/no_pools/img823.jpg) ![alt text](./data/train/no_pools/img102.jpg) ![alt text](./data/train/no_pools/img92.jpg) ![alt text](./data/train/no_pools/img702.jpg) ![alt text](./data/train/no_pools/img1333.jpg) ![alt text](./data/train/no_pools/img102.jpg) ![alt text](./data/train/no_pools/img192.jpg) ![alt text](./data/train/no_pools/img91.jpg)
 
-As for the satellite images on which the detection of *pools* will be performed we have 30 of them in the **data/zones/** directory.
+As for the satellite images on which the detection of *pools* will be performed, we have 30 of them in the **data/zones/** directory.
+
 
 Sample satellite image *(zone18.jpg)*:
 
 ![alt text](data/zones/zone18.jpg)*zone18.jpg*
+
+- Size of the training data :
+    - *pools* : 1398 (50x50) images
+    - *no_pools*: 1325 (50x50) images
+- Size of the validation data:
+    - *pools*: 179 (50x50) images
+    - *no_pools*: 176 (50x50) images
 
 ***
 
@@ -48,21 +54,19 @@ pip install -r requirements.txt
 
 ***
 
-## Models
+## Baseline Model
 
-### Baseline Model
-
-The baseline model is a simple 3-layered Convnet. This model is a simple implementation of a *Convolutional Neural Network* and will be used as refrence (in terms of performance) to the rest of the tested models.
+The baseline model is a simple 3-layered Convnet. This model is a simple implementation of a *Convolutional Neural Network* and will be used as reference (in terms of performance) to the rest of the tested models.
 
 ![alt text](data/README/PoolNetBaseline_3.png)*PoolNetBaseline Architecture*
 
-### Detection Mechanisms
+## Detection Mechanisms
 
-For the detection part, we divide the image into a grid of 50x50 patches which gives us 512 candidate position to test per satelite image (see image below). The constraint that was imposed for this project is to process one image in less then 10 seconds, but with our baseline model (which is a very simple convnet) we are able to provide predictions for 30 satellite images in around 35 seconds on CPU (with only 2 cores).
+For the detection part, we divide the image into a grid of 50x50 patches which give us 512 candidate positions to test per satellite image (see image below). The constraint that was imposed for this project is to process one image in less then 10 seconds, but with our baseline model (which is a very simple convnet) we are able to provide predictions for 30 satellite images in around 35 seconds on a CPU (with only two cores).
 
-![alt text](data/README/decomp.png)*Satelite image decomposition*
+![alt text](data/README/decomp.png)*Satellite image decomposition*
 
-Another post-processing has been implemented to provide better predictions. Since we do not have any priors about the position of pools whithin the satellite image, we test for adjacency on the boxes that we've detected (horizontaly or vertically) within the grid. This case is encountered when the pool image is divided between two patches, so we merge the boxes and recompute the probability for that specific patch (exp: see image below).
+Another post-processing has been implemented to provide better predictions. Since we do not have any priors about the position of pools within the satellite image, we test for adjacency on the boxes that we've detected (horizontally or vertically) within the grid. This case is encountered when the pool image is divided between two patches, so we merge the boxes and recompute the probability for that specific patch (Exp: see image below.).
 
 ![alt text](data/README/merging_adj.png)*Merging adjacent bounding boxes for better location prediction*
 ***
@@ -70,13 +74,6 @@ Another post-processing has been implemented to provide better predictions. Sinc
 ## Results
 
 ### Quality of the classifier
-
-- Number of training data :
-    - *pools* : 1398 (50x50) images
-    - *no_pools*: 1325 (50x50) images
-- Number of validation data:
-    - *pools*: 179 (50x50) images
-    - *no_pools*: 176 (50x50) images
 
 ![alt text](data/README/acc_loss_history_3.png)*Train/Validation Loss/Accuracy*
 
@@ -88,11 +85,11 @@ Sample Detection image *(zone18.jpg)*:
 
 ![alt text](data/README/pooldetection_th%3D0.75_zone18.jpg)*Detection on a satellite image with a threshold of 0.75 on the probability of each patch*
 
-Along with the image we provide a dictonary that contains all information relative to the position and probabilities of each bounding boxes (in this context we only keep the patches with a probability > 0.5, as the purpose of this project is to prove the feasability of such detection).
+Along with the image we provide a dictionary that contains all information relative to the position and probabilities of each bounding boxes (In this context we only keep the patches with a probability > 0.5, as the purpose of this project is to prove the feasibility of such detection.).
 
-Data relative to the dection image above *(zone18.jpg)*:
+Data relative to the detection image above *(zone18.jpg)*:
 
-**"The reason we have only 6 bounding boxes in the detected image above is that we have a applied a filter that will only display patches with probability >= 0.75. This is done only for purpose of testing and visualization, by default the **detect** class will display all potential pool patches (ie: probability >= 0.5)"**
+**"The reason we have only 6 bounding boxes in the detected image above is that we have a applied a filter that will only display patches with probability >= 0.75. This is done only for purpose of testing and visualization, by default the **detect** class will display all potential pool patches. (ie: probability >= 0.5)"**
 
 ```json
 "./data/zones/zone18.jpg": {
@@ -118,6 +115,6 @@ Data relative to the dection image above *(zone18.jpg)*:
 }
 ```
 
-Each tuple in the *pos* list represents the (x,y) coordinates of the top left corner of the bounding box that represents a potential pool (to get the center of the bounding box we just add 25 to x and y as we use a (50x50) sliding window for the detection). For better detection, we try to improve the predicted position of the bounding boxes by merging two adjacent boxes as sometimes a *pool* could be in two slinding window. This approach helps to make better detections and get closer to the real number of pools in that snapshot.
+Each tuple in the *pos* list represents the (x,y) coordinates of the top left corner of the bounding box that represents a potential pool(to get the center of the bounding box, we just add 25 to x and y as we use a 50x50 sliding window for the detection.). For better detection, we try to improve the predicted position of the bounding boxes by merging two adjacent boxes as sometimes a *pool* could be in two sliding window. This approach helps to make better detections and get closer to the real number of pools in that snapshot.
 
 ### Heatmaps
