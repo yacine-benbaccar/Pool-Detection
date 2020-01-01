@@ -58,7 +58,11 @@ The baseline model is a simple 3-layered Convnet. This model is a simple impleme
 
 ### Detection Mechanisms
 
+For the detection part, we divide the image into a grid of 50x50 patches which gives us 512 candidate position to test per satelite image (see image below). The constraint that was imposed for this project is to process one image in less then 10 seconds, but with our baseline model (which is a very simple convnet) we are able to provide predictions for 30 satellite images in around 35 seconds on CPU (with only 2 cores).
+
 ![alt text](data/README/decomp.png)*Satelite image decomposition*
+
+Another post-processing has been implemented to provide better predictions. Since we do not have any priors about the position of pools whithin the satellite image, we test for adjacency on the boxes that we've detected (horizontaly or vertically) within the grid. This case is encountered when the pool image is divided between two patches, so we merge the boxes and recompute the probability for that specific patch (exp: see image below).
 
 ![alt text](data/README/merging_adj.png)*Merging adjacent bounding boxes for better location prediction*
 ***
