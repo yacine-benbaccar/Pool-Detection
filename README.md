@@ -133,6 +133,11 @@ In this section, I will propose three other approaches that require more data an
 
 1. Mine for more data from satellite image APIs or online maps to create more robust data and create an extensive database that includes the position of pools on each image. Then use this data to train an Object Detection model. (exp: ```Fast R-CNN```)
 
-2. Use existing state of the art model for image classification like: ```Resnet```. But from the tests that I conducted during the preparation of this project, these model perform poorly (compared to simple ```Convnets```) on **low resolution** images. For this purpose, the use of a ```SRGAN (Super Resolution GAN)``` to upscale the training images to a size where we can use the aforementioned models without the degradation of performance can be a useful step better results. (A. Upscale the train images B. Train the model (transfer learning) on these images C. Scale the satellite images or use images with higher resolution D. Detect! = *same workflow*)
+2. Use existing state of the art model for image classification like: ```Resnet```. But from the tests that I conducted during the preparation of this project, these model perform poorly (compared to simple ```Convnets```) on **low resolution** images. For this purpose, the use of a ```SRGAN (Super Resolution GAN)```[[1]](https://github.com/deepak112/Keras-SRGAN)  to upscale the training images to a size where we can use the aforementioned models without the degradation of performance can be a useful step better results. (A. Upscale the train images B. Train the model (transfer learning) on these images C. Scale the satellite images or use images with higher resolution D. Detect! = *same workflow*)
 
 3. There are plenty of research that have been done on low resolution image recognition that can be implemented for this case as we are dealing with very low resolution images (50 x 50). Since these models are optimized to handle this type of input, we can *expect* better results compared to simple ```Convnet```.
+
+### Credits
+- [[1] Keras SR-GAN: Enhancing low resolution images by applying deep network with adversarial network (Generative Adversarial Networks) 
+to produce high resolutions images.](https://github.com/deepak112/Keras-SRGAN)
+- [Blog Keras for the necessary documentation on Keras](https://blog.keras.io/)
