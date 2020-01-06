@@ -46,7 +46,10 @@ class Detector:
 
     def predictProba(self)->tuple:
         x = self.prepImages()
+        tic = time.clock()
         probas = self.model.predict_proba(x, batch_size=batchSize).reshape(len(x))
+        elapsedTime = time.clock() - tic
+        print("Elapsed Time [s]: {:.3f}".format(elapsedTime))
         probas = probas.reshape((len(self.zones), (satHeight//imgHeight)*(satWidth//imgWidth)))
         return np.where(probas>=self.threshold, probas, 0.), dict(zip(self.zones, probas))
 
@@ -213,17 +216,24 @@ if __name__ == "__main__":
     # Load the satellite images
     zonesPath = "./data/zones/"
 
+    # Create the detector
     detect = Detector(model, zonesPath)
-
-    tic = time.clock()
     probas, probaMap = detect.predictProba()
     results = detect.cleanProba(probas)
-    elapsedTime = time.clock() - tic
     
     # detect.drawBoxes()
-    detect.drawHeatmap(probaMap)
-    print("Elapsed Time [s]: {:.3f}".format(elapsedTime))
-    # with open("predictions/results.json","w") as f:
-    #     json.dump(results, f, indent=4)
+    # detect.drawHeatmap(probaMap)
+
+    with open("predictions/results.json","w") as f:
+        json.dump(results, f, indent=2)
+
+    # Center x,y position just to comply with the instructions of the usecase
+    # for k in results:
+    #     positions = results[k]['pos']
+    #     newPositions = [(t[0]+25, t[1]+25) for t in positions]
+    #     results[k]['pos'] = newPositions
+
+    # with open("predictions/results_centered.json","w") as f:
+    #     json.dump(results, f, indent=2)
 
     print("END")

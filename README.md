@@ -138,6 +138,6 @@ In this section, I will propose three other approaches that require more data an
 3. There are plenty of research that have been done on low resolution image recognition that can be implemented for this case as we are dealing with very low resolution images (50 x 50). Since these models are optimized to handle this type of input, we can *expect* better results compared to simple ```Convnet```.
 
 ### Credits
-- [[1] Keras SR-GAN: Enhancing low resolution images by applying deep network with adversarial network (Generative Adversarial Networks) 
+- [[1] Keras SR-GAN: Enhancing low resolution images by applying deep networks with adversarial networks (Generative Adversarial Networks) 
 to produce high resolutions images.](https://github.com/deepak112/Keras-SRGAN)
 - [Blog Keras for the necessary documentation on Keras](https://blog.keras.io/)

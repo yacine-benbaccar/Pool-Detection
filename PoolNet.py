@@ -50,7 +50,7 @@ class PoolNetBaseline:
 
 # Leveraging pre-trained model from keras.applications
 # Performs poorly on low res images
-class PoolNetResnet:
+class PoolNetTL:
     @staticmethod
     def build(width:int, height:int, channels:int)->Sequential:
         if K.image_data_format() == 'channels_first':
