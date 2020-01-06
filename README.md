@@ -118,3 +118,21 @@ Data relative to the detection image above *(zone18.jpg)*:
 Each tuple in the *pos* list represents the (x,y) coordinates of the top left corner of the bounding box that represents a potential pool(to get the center of the bounding box, we just add 25 to x and y as we use a 50x50 sliding window for the detection.). For better detection, we try to improve the predicted position of the bounding boxes by merging two adjacent boxes as sometimes a *pool* could be in two sliding window. This approach helps to make better detections and get closer to the real number of pools in that snapshot.
 
 ### Heatmaps
+
+The use of the heatmap is primarily to understand the behaviour of the implemented model and helps make the detection of potential targets easier. We use the probabilities we predicted in the previous task then scale the probability matrix to the size of the input image so we can overlay the resulting heatmap (generated from the probability matrix) onto the image. We use a ```fading_agent``` which is a matrix that creates the fading effect on the heatmap, this is used to indicate the center of the detection as the potential position of the pool.
+
+![alt text](predictions/images/heatmaps/heatmap_zone18.jpg)*Example of a heatmap overlayed on satellite image*
+
+***
+
+## Going Further
+
+This work is considered a Proof of Concept to prove the feasibility of the task and is intended to be a baseline work that can be later improved to create a better detection model.
+
+In this section, I will propose three other approaches that require more data and more preparation:
+
+1. Mine for more data from satellite image APIs or online maps to create more robust data and create an extensive database that includes the position of pools on each image. Then use this data to train an Object Detection model. (exp: ```Fast R-CNN```)
+
+2. Use existing state of the art model for image classification like: ```Resnet```. But from the tests that I conducted during the preparation of this project, these model perform poorly (compared to simple ```Convnets```) on **low resolution** images. For this purpose, the use of a ```SRGAN (Super Resolution GAN)``` to upscale the training images to a size where we can use the aforementioned models without the degradation of performance can be a useful step better results. (A. Upscale the train images B. Train the model (transfer learning) on these images C. Scale the satellite images or use images with higher resolution D. Detect! = *same workflow*)
+
+3. There are plenty of research that have been done on low resolution image recognition that can be implemented for this case as we are dealing with very low resolution images (50 x 50). Since these models are optimized to handle this type of input, we can *expect* better results compared to simple ```Convnet```.

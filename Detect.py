@@ -44,11 +44,11 @@ class Detector:
             imgs.extend(self.splitImage(img))
         return np.array(imgs).reshape((len(imgs),imgHeight,imgWidth,channels))
 
-    def predictProba(self, images:np.ndarray)->np.ndarray:
+    def predictProba(self)->tuple:
         x = self.prepImages()
         probas = self.model.predict_proba(x, batch_size=batchSize).reshape(len(x))
         probas = probas.reshape((len(self.zones), (satHeight//imgHeight)*(satWidth//imgWidth)))
-        return np.where(probas>=self.threshold, probas, 0.), probas
+        return np.where(probas>=self.threshold, probas, 0.), dict(zip(self.zones, probas))
 
     def getAdjacentBoxes(self, coords:list)->list:
         # naive approach, this can be further optimized for high resolution
@@ -148,38 +148,42 @@ class Detector:
         return
 
     def drawHeatmap(self, probaMap:list)->None:
-        cmap = sns.cubehelix_palette(light=1, as_cmap=True, reverse=False)
+        # cmap = sns.cubehelix_palette(light=1, as_cmap=True, reverse=False)
+        cmap = sns.color_palette("Paired")
         # not the best implementation for it
         def f(i:int,j:int)->float:
             # fading function
-            fadingRate = 1./(24*np.sqrt(2))
+            fadingRate = 1./(20*np.sqrt(2)) # 24*np.sqrt(2) default value
+            # fadingRate = 0 # Debugging Value
             return max([1 - fadingRate * (np.sqrt((24-i)**2+(24-j)**2)),0])
         # the fadingAgent is used to create the fading effect on the heatmap
         fadingAgent = np.array([[f(i,j) for i in range(50)] for j in range(50)])
         for img in self.zones:
+            # Loading the image on which we will overlay the heatmap
             _, ax = plt.subplots(figsize=(20,10))
             image = load_img(img)
             ax.imshow(image)
             # Potential targets to mark the potential positions of pools
             potTargets = [[],[]] # [xs:list, ys:list]
+            tmpMap = probaMap[img].reshape(satHeight//imgHeight, satWidth//imgWidth)
             # scale up the probability matrix
             newProbaMap = np.zeros((800,1600))
             for i in range(satHeight//imgHeight):
                 for j in range(satWidth//imgWidth):
-                    newProbaMap[i*50:(i+1)*50, j*50:(j+1)*50] = probaMap[i][j] * fadingAgent
-                    if probaMap[i][j]>0.5:
+                    newProbaMap[i*50:(i+1)*50, j*50:(j+1)*50] = tmpMap[i][j] * fadingAgent
+                    if tmpMap[i][j]>0.5:
                         potTargets[0].append(j*50 + 24)
                         potTargets[1].append(i*50 + 24)
             # overlay the heatmap
-            heatmap = sns.heatmap(newProbaMap, ax=ax, cmap=cmap)
-            heatmap.collections[0].set_alpha(0.05)
+            heatmap = sns.heatmap(newProbaMap, ax=ax, cmap=cmap, linewidths=0.0)
+            heatmap.collections[0].set_alpha(0.1)
             # mark the potential positions for the pools in the area
-            plt.scatter(potTargets[0], potTargets[1], marker='x', s=40)
+            plt.scatter(potTargets[0], potTargets[1], marker='x', s=40, c='red')
             # discard the x and y labels
             plt.xticks([])
             plt.yticks([])
             # save the new heatmap
-            plt.savefig("./predictions/images/heatmap_{}".format(self.removePrefix(img)))
+            plt.savefig("./predictions/images/heatmaps/heatmap_{}".format(self.removePrefix(img)))
 
         return
 
@@ -212,14 +216,14 @@ if __name__ == "__main__":
     detect = Detector(model, zonesPath)
 
     tic = time.clock()
-    probas, probaMap = detect.predictProba(model)
+    probas, probaMap = detect.predictProba()
     results = detect.cleanProba(probas)
     elapsedTime = time.clock() - tic
     
-    detect.drawBoxes()
-    # detect.drawHeatmap(probaMap)
+    # detect.drawBoxes()
+    detect.drawHeatmap(probaMap)
     print("Elapsed Time [s]: {:.3f}".format(elapsedTime))
-    with open("predictions/results.json","w") as f:
-        json.dump(results, f, indent=4)
+    # with open("predictions/results.json","w") as f:
+    #     json.dump(results, f, indent=4)
 
     print("END")
